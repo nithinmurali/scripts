@@ -4,7 +4,12 @@ import os
 import sys
 
 folder = '.'
-i = 0
+
+if len(sys.argv)==1:
+    print "usage: name.py startingNumber"
+    exit()
+
+i = int(sys.argv[1])
 os.system('mkdir mvtemp')
 for file in os.listdir(folder):
     # print file + "to" + str(i) + os.path.splitext(file)[1]
