@@ -2,14 +2,20 @@
 
 import os
 import sys
+import argparse
 
 folder = '.'
 
-if len(sys.argv)==1:
-    print "usage: name.py startingNumber"
-    exit()
+parser = argparse.ArgumentParser()
+parser.add_argument('-s',"--start",nargs='?',default =0,type = int)
+args = parser.parse_args()
 
-i = int(sys.argv[1])
+if args.start:
+    start = args.start
+else:
+    start = 0
+
+i = start 
 os.system('mkdir mvtemp')
 for file in os.listdir(folder):
     # print file + "to" + str(i) + os.path.splitext(file)[1]
