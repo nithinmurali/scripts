@@ -1,0 +1,28 @@
+#!/usr/bin/python
+
+from __future__ import print_function
+import os
+import argparse
+
+def main():
+    parser = argparse.ArgumentParser(description=" set backlight brightness ")
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument('brightness',nargs='?', type=int, help=' brightness value (0-100)')
+    group.add_argument('-g','--get', action='store_true', help='print current brightness' )
+    
+    args = parser.parse_args()
+
+    if args.get:
+        print('current backlight brightness is: ')
+        os.system('cat /sys/class/backlight/acpi_video0/brightness')
+        return
+
+    brightness = args.brightness
+    if brightness < 0 or brightness > 100:
+        print(" please enter a value between 0-100")
+    else:
+        os.system('echo -n ' + str(brightness) + ' >> /sys/class/backlight/acpi_video0/brightness')
+
+    
+if __name__ == '__main__':
+    main()
