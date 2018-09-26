@@ -1,0 +1,74 @@
+#!/bin/bash                                                                                                            
+#
+# This script does this:
+# launch an terminal if is is not launched in current workspace
+# focus the terminal if it is launched in current workspace but not focused,
+# minimize the app if it is focused.
+# 
+# Set a key shortcut to this script
+
+
+# app=$1
+# process_name=usr/bin/terminator
+process_name=/bin/bash
+NAME="terminator.Terminator"
+
+SCREEN_W=$(xwininfo -root | sed -n 's/^  Width: \(.*\)$/\1/p')
+SCREEN_H=$(xwininfo -root | sed -n 's/^  Height: \(.*\)$/\1/p')
+
+# cur_vp=$(wmctrl -d | awk '{print $6}' | awk -F, '{$0=$1}1' )
+# cur_ws=$(($cur_vp/$SCREEN_W))
+
+# check if window is in current workspace
+in_current_ws(){
+  win_off_x=$(echo "$1" | awk '{print $3}')
+  win_off_y=$(echo "$1" | awk '{print $4}')
+
+  if [ $win_off_x -ge 0 ] && [ $win_off_x -le $SCREEN_W ]
+  then
+      echo 1
+  else
+    echo 0
+  fi
+}
+
+# Get all terminal windows
+
+# windows=$(wmctrl -xlG | awk -v NAME="$NAME" '$7==NAME {print $0}')
+windows=$(wmctrl -xlG | awk -v NAME="$process_name" '$9==NAME {print $0}')
+
+
+# Get terminal window is current workspace
+
+while read win_dat ; do
+  # echo $win_dat
+  win_in_ws=$(in_current_ws "$win_dat")
+  if [ $win_in_ws -eq 1 ]
+    then
+      cur_win=$(echo "$win_dat" | awk '{print $1}')
+    fi
+done <  <(echo "$windows")
+
+# echo $cur_win
+
+# If it isn't launched, then launch
+
+if [ -z $cur_win ]; then
+  terminator
+  # bash
+else
+
+  # If it is launched then check if it is focused
+
+  foc=$(xdotool getactivewindow | xargs -I {} printf "0x0%02X" {})
+    
+  if [[ $cur_win == $foc ]]; then
+    # if it is focused, then minimize
+    xdotool getactivewindow windowminimize
+  else
+    # if it isn't focused then get focus
+    wmctrl -x -iR $cur_win
+  fi
+fi
+
+exit 0
