@@ -1,0 +1,41 @@
+#!/usr/bin/python
+
+"""
+Script to plot a any file, made for DDP
+"""
+
+import os
+import sys
+import argparse
+import datetime
+import matplotlib.pyplot as plt
+import numpy as np
+
+parser = argparse.ArgumentParser()
+parser.add_argument("file")
+parser.add_argument("process", nargs='?', default="n")
+args = parser.parse_args()
+
+SAMPLE_RATE=300.0
+
+with open(args.file) as f:
+	data = f.readlines()
+
+data = [ float(x.strip()) for x in data]
+t = np.arange(len(data))/SAMPLE_RATE
+
+if args.process=='y':
+    from IPython import embed;embed()
+
+fig, ax = plt.subplots()
+
+ax.plot(t, data)
+ax.set_xlabel("Time (s)")
+ax.set_ylabel("Amplitude (rad/s)")
+# ax.draw()
+while True:
+    if plt.waitforbuttonpress():
+        break
+plt.close(fig)
+
+#plt.show(block=True)
