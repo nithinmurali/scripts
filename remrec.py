@@ -1,5 +1,9 @@
 #!/usr/bin/python
 
+"""
+remove all recently created files
+"""
+
 import os
 import sys
 import argparse
@@ -26,10 +30,10 @@ for file in os.listdir(folder):
         hour = divmod(c.days * 86400 + c.seconds, 60*60)[0]
         if hour < args.hour:
             cmd = 'mv ' + file  
-            os.system(cmd) 
+            # os.system(cmd) 
     elif args.minutes:
         minutes = divmod(c.days * 86400 + c.seconds, 60)[0]
         if minutes < args.minutes:
             cmd = 'ls'+file
-            os.system(cmd)
+            # os.system(cmd)
     pass
