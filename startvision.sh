@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# script to startAUV IITB vision module
+
 #echo $1
 if [ "$1"  = "kill" ]; then
     echo "killing all"
