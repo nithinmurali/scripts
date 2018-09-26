@@ -1,28 +1,38 @@
-#!/usr/bin/python
-
+#!/usr/bin/env python
+# PYTHON_ARGCOMPLETE_OK
 from __future__ import print_function
 import os
-import argparse
+import  argcomplete, argparse
 
 def main():
     parser = argparse.ArgumentParser(description=" set backlight brightness ")
     group = parser.add_mutually_exclusive_group()
     group.add_argument('brightness',nargs='?', type=int, help=' brightness value (0-100)')
     group.add_argument('-g','--get', action='store_true', help='print current brightness' )
-    
+
+    argcomplete.autocomplete(parser)
     args = parser.parse_args()
 
     if args.get:
         print('current backlight brightness is: ')
-        os.system('cat /sys/class/backlight/acpi_video0/brightness')
+        f = open("/sys/class/backlight/intel_backlight/max_brightness")
+        max_brightness = float(f.readline().strip())
+        f = open("/sys/class/backlight/intel_backlight/brightness")
+        brightness = float(f.readline().strip())
+        brightness = round(float(brightness/max_brightness)*100)
+        print(int(brightness))
         return
 
     brightness = args.brightness
     if brightness < 0 or brightness > 100:
         print(" please enter a value between 0-100")
     else:
-        os.system('echo -n ' + str(brightness) + ' >> /sys/class/backlight/acpi_video0/brightness')
+        f = open("/sys/class/backlight/intel_backlight/max_brightness")
+        max_brightness = float(f.readline().strip())
+        brightness =  int(float(brightness)/100*max_brightness)
+        # print(max_brightness)
+        # print(brightness)
+        os.system('sudo su -c "echo -n ' + str(brightness) + ' >> /sys/class/backlight/intel_backlight/brightness"')
 
-    
 if __name__ == '__main__':
     main()
