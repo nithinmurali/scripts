@@ -1,13 +1,19 @@
 #!/usr/bin/python
 
+"""
+script to rename all files in a folder in increasing numbers
+"""
+
 import os
 import sys
 import argparse
+import argcomplete
 
 folder = '.'
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-s',"--start",nargs='?',default =0,type = int)
+argcomplete.autocomplete(parser)
 args = parser.parse_args()
 
 if args.start:
@@ -24,10 +30,9 @@ for file in os.listdir(folder):
         pass
 
     cmd = 'mv ' + file + " mvtemp/"+ str(i) + os.path.splitext(file)[1] 
-    # print cmd
-    os.system(cmd) 
+    print cmd
+    # os.system(cmd) 
     i += 1;
-    # print i;
     pass
-os.system('mv mvtemp/* ./');
-os.system('rm -r mvtemp');
+# os.system('mv mvtemp/* ./');
+# os.system('rm -r mvtemp');
